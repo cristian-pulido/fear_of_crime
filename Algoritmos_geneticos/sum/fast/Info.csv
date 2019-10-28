@@ -1,0 +1,9 @@
+,Values
+Name,suma
+Persons,50
+Gens,1225
+individuals,100
+n_generations,20
+p_crossover,0.7
+p_mutation,0.0008163265306122449
+generacional,False
