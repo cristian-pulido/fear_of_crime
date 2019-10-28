@@ -1,10 +1,14 @@
 import os
 import sys
 os.chdir("Algoritmos_geneticos/")
-from Algoritmos_geneticos.multi import *
+from multi import *
+from utils import *
 os.chdir("../Model")
 from pos import *
 os.chdir("../")
+
+sys.path.append("/home/combios/Documents/cpulido/Pos/fear_of_crime/Model/")
+sys.path.append("/home/combios/Documents/cpulido/Pos/fear_of_crime/Algoritmos_geneticos/")
 
 def run_experiments(grupos = {'A':'Immune','B':'Susceptible','C':'Highly Susceptible'},
                     modelo='g_m_v',
@@ -20,7 +24,7 @@ def run_experiments(grupos = {'A':'Immune','B':'Susceptible','C':'Highly Suscept
                     ## parametros AG,
                     root_path="main_test",
                     runs=30,
-                    nombre="fear"                 ,
+                    nombre="fear",
                     individuals=500,
                     mode_initial_pop=pop_ini_bin,
                     n_generations=50,
@@ -28,15 +32,18 @@ def run_experiments(grupos = {'A':'Immune','B':'Susceptible','C':'Highly Suscept
                     p_mutation=None,
                     crossover_func=ruleta,
                     generacional=False,
-                    console=False,
+                    console=True,
                     plots=5
                    ):
     
+    
     persons=n
-    dist_cr=dist_crimen(crimen,n,np.array(list((q.values())))),
+    dist_cr=dist_crimen(crimen,n,np.array(list((q.values()))))
     s0=np.random.rand(n)
     def convert_individual_to_vecinos(individual,dist_crimen,n=n):
+        
         vecinos=[[i,c] for i,c in zip(range(n),dist_crimen)]
+        #print(vecinos)
         k=0
         for i in range(n-1):    
             I=i*n-k
@@ -44,7 +51,7 @@ def run_experiments(grupos = {'A':'Immune','B':'Susceptible','C':'Highly Suscept
             k+=(i+1)
             #print(individual[I:F])
             v=np.where(individual[I:F])[0]+i+1
-            #print(v)
+            
             for j in v:
                 vecinos[i].append(j)
                 vecinos[j].append(i)
@@ -58,7 +65,8 @@ def run_experiments(grupos = {'A':'Immune','B':'Susceptible','C':'Highly Suscept
         return num/denom
 
     def fitness_fear(individual,n_vecinos=n_vecinos):
-        from Model.pos import generate
+        
+        #from Model.pos import generate
         vertices=convert_individual_to_vecinos(individual,dist_cr,n)
 
         g_mean=np.mean([len(v[2:]) for v in vertices])

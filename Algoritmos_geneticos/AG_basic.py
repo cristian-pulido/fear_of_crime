@@ -25,6 +25,7 @@ def commons_f(G_s):
 
 class AG:
     
+    
     def __init__(self, nombre,persons,
                  individuals,mode_initial_pop,
                  n_generations,
@@ -34,6 +35,7 @@ class AG:
                  mutation_func=mutation_usual,
                  generacional=False,
                  fitness_func=fitness_basic):
+        
         self.nombre=nombre
         self.persons = persons
         self.gens = int(persons*(persons-1)/2)
@@ -81,6 +83,7 @@ class AG:
         self.mode_initial_pop(self)
         
     def validate_grade_individual(self,individual):
+        
         n=self.persons
         X=convert_individual_to_graph(n,individual)
         return sum(dict(nx.degree(X)).values())/n
@@ -105,6 +108,7 @@ class AG:
         plt.show()
             
     def evaluate_fitness_ind(self,individual):
+
         t_f=t_form(individual)
         
         if t_f not in self.fitness:
@@ -132,6 +136,7 @@ class AG:
             return values
         
     def get_parents(self):
+        
         #print(self.evaluate_pop(self.current_population)[0])
         P=self.crossover_func(self.current_population,self.evaluate_pop(self.current_population)[0])
         return P[::2], P[1::2]
@@ -140,6 +145,7 @@ class AG:
     
 
     def crossover(self,P1,P2):
+        
         cruce=list(map(crossover_usual,P1,P2,[self.persons]*len(P1),[self.p_crossover]*len(P1)))
         
         return cruce
@@ -175,8 +181,9 @@ class AG:
             self.current_population = np.concatenate(list(map(self.select_best,P1,P2,cruce_mut)))
                            
         self.current_generation+=1
-        
-        return self.evaluate_pop(self.current_population)[1]   
+        self.fitness={}
+        #return self.evaluate_pop(self.current_population)[1]   
+        return 0
     
     def plot_results(self,size=(12,5),save=None):
         fig = plt.figure()
@@ -186,15 +193,15 @@ class AG:
         ax1.set_xlabel("Generation")
         ax1.set_ylabel("Fitness")
         
-        sns.lineplot(np.arange(self.current_generation),
+        sns.lineplot(np.arange(self.current_generation-1),
                      [ i['Average Fitness'] for i in self.generations.values()],
                      ax=ax1,ci='sd',
                      label='Average Fitness')
-        sns.lineplot(np.arange(self.current_generation),
+        sns.lineplot(np.arange(self.current_generation-1),
                      [ i['Fitness Best'] for i in self.generations.values()],
                      ax=ax1,
                      label='Fitness Best')
-        sns.lineplot(np.arange(self.current_generation),
+        sns.lineplot(np.arange(self.current_generation-1),
                      [ i["Fitness Worst"] for i in self.generations.values()],
                      ax=ax1,
                      label="Fitness Worst")      
@@ -265,6 +272,7 @@ class AG:
         plt.show()
         
     def example_crossover_usual(self,save=None):
+        
         P=self.current_population
         I=P[np.random.choice(len(P),2)]
         J=crossover_usual(I[0],I[1],self.persons)

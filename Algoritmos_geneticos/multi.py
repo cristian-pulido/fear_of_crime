@@ -1,15 +1,18 @@
 from AG_basic import *
+from utils import *
 import multiprocessing
 from joblib import Parallel, delayed
 
-num_cores = multiprocessing.cpu_count()
+num_cores = 12#multiprocessing.cpu_count()
 
 def multi_runs_AG(root_path,runs,nombre,persons,individuals,
                   mode_initial_pop,n_generations,p_crossover,
                   fitness_func,plots,p_mutation=None,
                   crossover_func=ruleta,generacional=False,console=True):
-
+    
     def single_AG(i):
+        
+        
         AG_1=AG(nombre=nombre+str(i),
                 persons=persons,
                 individuals=individuals,
@@ -21,12 +24,12 @@ def multi_runs_AG(root_path,runs,nombre,persons,individuals,
                 generacional=generacional,
                 fitness_func=fitness_func)
 
-
+        
         return AG_1.run_alone(path_dir=os.path.join(runs_path,"run_"+str(i)),console=console,plots=plots)
 
 
     if console == True:
-                matplotlib.use('Agg')
+        matplotlib.use('Agg')
 
 
     if os.path.exists(root_path):
@@ -50,7 +53,22 @@ def multi_runs_AG(root_path,runs,nombre,persons,individuals,
     I.to_csv(os.path.join(root_path,"Info.csv"))
     
     
+    
     processed_list = Parallel(n_jobs=num_cores)(delayed(single_AG)(i) for i in range(runs))
+#     for i in range(runs):
+#         AG_1=AG(nombre=nombre+str(i),
+#                     persons=persons,
+#                     individuals=individuals,
+#                     mode_initial_pop=mode_initial_pop,
+#                     n_generations=n_generations,
+#                     p_crossover=p_crossover,
+#                     p_mutation=p_mutation,
+#                     crossover_func=crossover_func,
+#                     generacional=generacional,
+#                     fitness_func=fitness_func)
+
+
+#         AG_1.run_alone(path_dir=os.path.join(runs_path,"run_"+str(i)),console=console,plots=plots)
 
     results=[]
     for i in range(runs):
