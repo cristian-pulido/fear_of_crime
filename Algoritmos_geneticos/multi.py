@@ -79,10 +79,9 @@ def multi_runs_AG(root_path,runs,nombre,persons,individuals,
                    columns=["Values"]
             )
     I.to_csv(os.path.join(root_path,"Info.csv"))
-    
-    
-    
-    processed_list = Parallel(n_jobs=num_cores)(delayed(single_AG)(i) for i in range(runs))
+
+    Parallel(n_jobs=num_cores)(delayed(single_AG)(i) for i in range(runs))
+
 #     for i in range(runs):
 #         AG_1=AG(nombre=nombre+str(i),
 #                     persons=persons,

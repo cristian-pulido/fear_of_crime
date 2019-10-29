@@ -1,14 +1,18 @@
 import os, shutil
 import sys
-os.chdir("Algoritmos_geneticos/")
-from multi import *
-from utils import *
-os.chdir("../Model")
-from pos import *
-os.chdir("../")
+# os.chdir("Algoritmos_geneticos/")
+# from multi import *
+# from utils import *
+# os.chdir("../Model")
+# from pos import *
+# os.chdir("../")
 
 sys.path.append("/home/combios/Documents/cpulido/Pos/fear_of_crime/Model/")
 sys.path.append("/home/combios/Documents/cpulido/Pos/fear_of_crime/Algoritmos_geneticos/")
+
+from multi import *
+from utils import *
+from pos import *
 
 def run_experiments(grupos = {'A':'Immune','B':'Susceptible','C':'Highly Susceptible'},
                     modelo='g_m_v',

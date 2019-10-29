@@ -126,7 +126,7 @@ class AG:
         
         if not offspring:
             self.generations[self.current_generation]={"Average Fitness":np.mean(values),
-                                                       "Best Individual":P[np.argmax(values)],
+                                                       #"Best Individual":P[np.argmax(values)],
                                                        "Fitness Best":np.max(values),
                                                        "Fitness Worst":np.min(values),
             }
@@ -238,12 +238,13 @@ class AG:
             self.evolution()
             #print(False in [validate_individual(self.persons,i) for i in self.current_population])
             if i in np.around(np.linspace(plots,self.n_generations,plots)) :
+                self.plot_results(size=size,save=os.path.join(path_dir,"Results.pdf"))
                 self.show_dist_deggre_pop(size=size,save=os.path.join(folder_generations,"generation_"+str(i)+".pdf"))
         
         pd.DataFrame(self.generations).T.to_csv(os.path.join(path_dir,"results_generations.csv"))
         self.plot_results(size=size,save=os.path.join(path_dir,"Results.pdf"))
-        
-        np.save(os.path.join(path_dir,"best.npy"),self.generations[self.n_generations]['Best Individual'])
+        values=list(map(self.evaluate_fitness_ind,self.current_population))
+        np.save(os.path.join(path_dir,"best.npy"),self.current_population[np.argmax(values)])
         
         return 0
         
