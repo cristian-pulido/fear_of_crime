@@ -1,4 +1,4 @@
-import os
+import os, shutil
 import sys
 os.chdir("Algoritmos_geneticos/")
 from multi import *
@@ -81,11 +81,12 @@ def run_experiments(grupos = {'A':'Immune','B':'Susceptible','C':'Highly Suscept
     fitness_func=fitness_fear
     
     
-    multi_runs_AG(root_path,runs,nombre,persons,individuals,
-                  mode_initial_pop,n_generations,p_crossover,
-                  fitness_func,plots,p_mutation,
-                  crossover_func,generacional,console)
     
+    if os.path.exists(root_path):
+        shutil.rmtree(root_path)
+    os.mkdir(root_path)
+    
+    print("Inicio")
     pd.DataFrame({'Vars':['grupos','modelo','crimen','n','T','psi','nu','mu','lamda','q','n_vecinos',
                       'root_path','runs','nombre','individuals','n_generations','p_crossover',
                       'p_mutation','generacional'],
@@ -93,3 +94,11 @@ def run_experiments(grupos = {'A':'Immune','B':'Susceptible','C':'Highly Suscept
                        root_path,runs,nombre,individuals,n_generations,p_crossover,
                        p_mutation,generacional]
              }).to_csv(os.path.join(root_path,"Parameters.csv"),index=False)
+
+    multi_runs_AG(root_path,runs,nombre,persons,individuals,
+                  mode_initial_pop,n_generations,p_crossover,
+                  fitness_func,plots,p_mutation,
+                  crossover_func,generacional,console)
+
+    print("Fin")
+
