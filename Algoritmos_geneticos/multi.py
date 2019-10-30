@@ -49,7 +49,10 @@ def multi_runs_AG(root_path,runs,nombre,persons,individuals,
 
         AG_1.run_alone(path_dir=os.path.join(runs_path,"run_"+str(i)),console=console,plots=plots)
         if i % 2 == 1:
-            results(i)
+            try:
+                results(i)
+            except:
+                print("No results")
 
         return 0
 
