@@ -127,8 +127,8 @@ class AG:
         if not offspring:
             self.generations[self.current_generation]={"Average Fitness":np.mean(values),
                                                        #"Best Individual":P[np.argmax(values)],
-                                                       "Fitness Best":np.max(values),
-                                                       "Fitness Worst":np.min(values),
+                                                       "Fitness Best":np.min(values),
+                                                       "Fitness Worst":np.max(values),
             }
             
             return np.array(values),self.generations[self.current_generation] 
@@ -166,7 +166,7 @@ class AG:
             return np.array([p1,p2])
         else:
             fitness=list(map(self.evaluate_fitness_ind,ind_aux))
-            hijos=ind_aux[np.argpartition(fitness,1)[::-1][:2]]
+            hijos=ind_aux[np.argpartition(fitness,1)[:2]]
             return hijos
 
     
@@ -176,7 +176,7 @@ class AG:
         cruce_mut=list(map(self.mutation,P1,P2,cruce))
         
         if self.generacional == True:
-            self.current_population =np.concatenate(cruce_mut)
+            self.current_population = np.concatenate(cruce_mut)
         else:
             self.current_population = np.concatenate(list(map(self.select_best,P1,P2,cruce_mut)))
                            

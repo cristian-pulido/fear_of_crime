@@ -7,8 +7,9 @@ import sys
 # from pos import *
 # os.chdir("../")
 
-sys.path.append("/home/combios/Documents/cpulido/Pos/fear_of_crime/Model/")
-sys.path.append("/home/combios/Documents/cpulido/Pos/fear_of_crime/Algoritmos_geneticos/")
+sys.path.append(os.path.join(os.path.dirname(__file__),"Model"))
+sys.path.append(os.path.join(os.path.dirname(__file__),"Algoritmos_geneticos"))
+
 
 from multi import *
 from utils import *
@@ -25,6 +26,7 @@ def run_experiments(grupos = {'A':'Immune','B':'Susceptible','C':'Highly Suscept
                     lamda={'A':0,'B':0.005,'C':0.05},
                     q={'A':0.7,'B':0.2,'C':0.1},
                     n_vecinos=10,
+                    range_vecinos=5,
                     ## parametros AG,
                     root_path="main_test",
                     runs=30,
@@ -68,19 +70,25 @@ def run_experiments(grupos = {'A':'Immune','B':'Susceptible','C':'Highly Suscept
         num = math.exp(-(float(x)-float(mean))**2/(2*var))
         return num/denom
 
-    def fitness_fear(individual,n_vecinos=n_vecinos):
+    def fitness_fear(individual,n_vecinos=n_vecinos,range_vecinos=range_vecinos):
         
         #from Model.pos import generate
         vertices=convert_individual_to_vecinos(individual,dist_cr,n)
 
         g_mean=np.mean([len(v[2:]) for v in vertices])
 
-        x=normpdf(g_mean,n_vecinos,2)/normpdf(10,n_vecinos,2)
+        #x=normpdf(g_mean,n_vecinos,2)/normpdf(10,n_vecinos,2)
+        x=1
+        if g_mean < n_vecinos-range_vecinos or g_mean > n_vecinos+range_vecinos :
+                        
+            return x
+        
+        else:
 
-        S=generate(vertices,psi=psi,
-                   nu=nu,mu=mu,T=T,
-                   s=s0,lamda=lamda,modelo=modelo)[0]
-        return (1-S.T[:,100:].mean())*x
+            S=generate(vertices,psi=psi,
+                       nu=nu,mu=mu,T=T,
+                       s=s0,lamda=lamda,modelo=modelo)[0]
+            return S.T[:,100:].mean()*x
     
     fitness_func=fitness_fear
     

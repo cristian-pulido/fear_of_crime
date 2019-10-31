@@ -1,9 +1,9 @@
 ,Values
 Name,suma
-Persons,10
-individuals,30
-n_generations,15
+Persons,16
+individuals,300
+n_generations,200
 p_crossover,0.7
 p_mutation,
 generacional,False
-runs,10
+runs,30

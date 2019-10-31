@@ -182,7 +182,7 @@ def pop_ini_bin(AG):
 ### fitness functions    
 
 def fitness_basic(individual):
-    return individual.sum()
+    return len(individual)-individual.sum() +0.1
 
 
     
@@ -194,5 +194,8 @@ def random(P,F=None):
     return P[np.random.choice(len(P),size=len(P))]
     
 def ruleta(P,F):
+    #F=abs(F)
+    F=np.array(F)
+    F=-F+np.max(F)+1
     F=F/F.sum()
     return P[np.random.choice(len(P),p=F,size=len(P))]
