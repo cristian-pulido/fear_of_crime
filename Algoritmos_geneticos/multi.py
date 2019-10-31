@@ -3,7 +3,7 @@ from utils import *
 import multiprocessing
 from joblib import Parallel, delayed
 
-num_cores = round(multiprocessing.cpu_count()*1/2)
+num_cores = 2#round(multiprocessing.cpu_count()*1/2)
 
 def multi_runs_AG(root_path,runs,nombre,persons,individuals,
                   mode_initial_pop,n_generations,p_crossover,
