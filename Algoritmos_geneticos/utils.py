@@ -82,7 +82,7 @@ def swap_mutation(individual,n,a=None,b=None,test=False):
     else:
         return convert_matrix_to_individual(np.asarray(nx.to_numpy_matrix(A,np.arange(n),dtype=int))),a,b
 
-def mutation_usual(individual,n,p=None):
+def usual_mutation(individual,n,p=None):
     if not p:
         p=1/len(individual)
     mut = np.random.rand(len(individual))<p    
@@ -93,7 +93,7 @@ def mutation_usual(individual,n,p=None):
         
     return result 
 
-def crossover_usual(individual1,individual2,n,p=0.7):
+def usual_crossover(individual1,individual2,n,p=0.7):
     gens=len(individual1)
     linea_cruce=np.random.randint(0,gens)
     cruce=(np.arange(gens)<linea_cruce)*(np.random.rand()<p)

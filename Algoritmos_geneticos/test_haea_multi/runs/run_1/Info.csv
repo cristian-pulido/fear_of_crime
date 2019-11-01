@@ -1,0 +1,8 @@
+,Values
+Name,test_haea_multi1
+Persons,100
+Gens,4950
+individuals,50
+p_mutation,0.00020202020202020202
+generacional,False
+operators,"['usual_mutation', 'usual_crossover', 'swap_mutation']"

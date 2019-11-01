@@ -32,7 +32,7 @@ class AG:
                  p_crossover=0.7,
                  p_mutation=None,
                  crossover_func=ruleta,
-                 mutation_func=mutation_usual,
+                 mutation_func=usual_mutation,
                  generacional=False,
                  fitness_func=fitness_basic):
         
@@ -146,7 +146,7 @@ class AG:
 
     def crossover(self,P1,P2):
         
-        cruce=list(map(crossover_usual,P1,P2,[self.persons]*len(P1),[self.p_crossover]*len(P1)))
+        cruce=list(map(usual_crossover,P1,P2,[self.persons]*len(P1),[self.p_crossover]*len(P1)))
         
         return cruce
 
@@ -244,11 +244,11 @@ class AG:
         pd.DataFrame(self.generations).T.to_csv(os.path.join(path_dir,"results_generations.csv"))
         self.plot_results(size=size,save=os.path.join(path_dir,"Results.pdf"))
         values=list(map(self.evaluate_fitness_ind,self.current_population))
-        np.save(os.path.join(path_dir,"best.npy"),self.current_population[np.argmax(values)])
+        np.save(os.path.join(path_dir,"best.npy"),self.current_population[np.argmin(values)])
         
         return 0
         
-    def example_mutation_usual(self,save=None):
+    def example_usual_mutation(self,save=None):
         P=self.current_population
         individual=P[np.random.choice(len(P))]
         colors=['black','r']
@@ -259,7 +259,7 @@ class AG:
         ax[2].title.set_text('Highlight Difference')
         G=convert_individual_to_graph(self.persons,individual)
         nx.draw_networkx(G,pos=nx.circular_layout(G),with_labels=True,ax=ax[0],width=2)
-        mut=mutation_usual(individual,self.persons)
+        mut=usual_mutation(individual,self.persons)
         X=convert_individual_to_graph(self.persons,mut)
         nx.draw_networkx(X,pos=nx.circular_layout(X),with_labels=True,ax=ax[1],width=2)
         effect=list(set(G.edges).symmetric_difference(set(X.edges)))
@@ -272,11 +272,11 @@ class AG:
             plt.savefig(save,dpi=300) 
         plt.show()
         
-    def example_crossover_usual(self,save=None):
+    def example_usual_crossover(self,save=None):
         
         P=self.current_population
         I=P[np.random.choice(len(P),2)]
-        J=crossover_usual(I[0],I[1],self.persons)
+        J=usual_crossover(I[0],I[1],self.persons)
         I=np.concatenate((I,J))
         fig,ax=plt.subplots(2,2,figsize=(10,10))
         [axi.set_axis_off() for axi in ax.ravel()]

@@ -1,0 +1,8 @@
+,Values
+Name,test_haea_multi
+Persons,100
+individuals,50
+n_generations,100
+p_mutation,
+generacional,False
+runs,30
