@@ -36,7 +36,8 @@ class AG_pop_ini_test:
         ax1.set_xlabel("Average Degree")
         ax1.set_ylabel("Frequency")
         ax2.set_xlabel("Average Degree")
-        sns.distplot(D,kde=False,ax=ax1)
+        ax2.set_xlim(0,self.persons)
+        sns.distplot(D,kde=False,ax=ax1,hist_kws={"range": [0,self.persons]})
         sns.swarmplot(x=D,ax=ax2)
         
         if save:
@@ -52,4 +53,5 @@ def test(persons=100,individuals=800,size=(12,5),saves=[None]*3):
         #%timeit AG_1.generate_pop_ini()
         AG_1.generate_pop_ini()
         AG_1.show_dist_deggre_pop(size=size,save=saves[idx])
+        print(AG_1.current_population.sum(axis=1).mean(),AG_1.current_population.sum(axis=1).std())
     

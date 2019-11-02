@@ -1,8 +1,8 @@
 ,Values
 Name,test_haea_multi29
-Persons,100
-Gens,4950
+Persons,16
+Gens,120
 individuals,50
-p_mutation,0.00020202020202020202
+p_mutation,0.008333333333333333
 generacional,False
 operators,"['usual_mutation', 'usual_crossover', 'swap_mutation']"

@@ -2,8 +2,8 @@
 Name,suma
 Persons,16
 Gens,120
-individuals,300
-n_generations,500
+individuals,1000
+n_generations,300
 p_crossover,0.7
 p_mutation,0.008333333333333333
 generacional,False

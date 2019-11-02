@@ -32,9 +32,10 @@ class HAEA:
         self.generacional=generacional
         self.n_offsprings=n_offsprings
         self.operators=operators
-        p_operators=np.random.rand(len(operators))
-        self.p_operators=p_operators/p_operators.sum()
-        self.historial_p_operators={1:self.p_operators}
+        p_operators=np.random.rand()
+        A=np.random.rand(len(operators),self.individuals)        
+        self.p_operators=(A/A.sum(axis=0)).T
+        self.historial_p_operators={1:self.p_operators.mean(axis=0)}
                
         
         import warnings
@@ -117,9 +118,9 @@ class HAEA:
             return values
         
         
-    def get_offspring(self,individual):
+    def get_offspring(self,individual,index_individual):
         n_offsprings=self.n_offsprings
-        index_operator=np.random.choice(np.arange(len(self.operators)),p=self.p_operators)
+        index_operator=np.random.choice(np.arange(len(self.operators)),p=self.p_operators[index_individual])
         operator,d=self.operators[index_operator]
 
         if d == 1:   
@@ -138,7 +139,7 @@ class HAEA:
 
         return offspring,index_operator
     
-    def select_best(self,individual,hijos,index_operator):
+    def select_best(self,individual,hijos,index_operator,index_individual):
         best=hijos[np.argmin(self.evaluate_pop(hijos,offspring=True))]
 
         if self.evaluate_fitness_ind(individual) < self.evaluate_fitness_ind(best):
@@ -147,30 +148,29 @@ class HAEA:
             new = best
         delta = np.random.rand()
         if self.evaluate_fitness_ind(individual) <= self.evaluate_fitness_ind(best):
-            self.p_operators[index_operator] = (self.p_operators[index_operator])*(1-delta)
+            self.p_operators[index_individual][index_operator] = (self.p_operators[index_individual][index_operator])*(1-delta)
         else:
-            self.p_operators[index_operator] = (self.p_operators[index_operator])*(1+delta)
+            self.p_operators[index_individual][index_operator] = (self.p_operators[index_individual][index_operator])*(1+delta)
             
-        p_operators=self.p_operators/self.p_operators.sum()
+        p_operators=self.p_operators[index_individual]/self.p_operators[index_individual].sum()
         
-        self.p_operators=p_operators
-
-        self.historial_p_operators[len(self.historial_p_operators)+1]=np.around(self.p_operators,2)
+        self.p_operators[index_individual]=p_operators
 
         return new
     
-    def evolution_ind(self,individual):
-        hijos,d=self.get_offspring(individual)
-        return self.select_best(individual,hijos,d)
+    def evolution_ind(self,individual,index_individual):
+        hijos,d=self.get_offspring(individual,index_individual)
+        return self.select_best(individual,hijos,d,index_individual)
     
     def evolution(self):
         self.evaluate_pop(self.current_population)
         new_P=np.zeros((self.individuals,self.gens))
         for idx,i in enumerate(self.current_population):
-            new_P[idx]=self.evolution_ind(i)
+            new_P[idx]=self.evolution_ind(i,idx)
         self.current_population=new_P
         self.current_generation+=1
         self.fitness={}
+        self.historial_p_operators[self.current_generation]=self.p_operators.mean(axis=0)
         return 0
         
     
@@ -211,10 +211,9 @@ class HAEA:
                 self.plot_results(size=size,save=os.path.join(path_dir,"Results.pdf"))
                 self.show_dist_deggre_pop(size=size,save=os.path.join(folder_generations,"generation_"+str(i)+".pdf"))
                 
-        means=[]
-        for i in range(self.current_generation-1):
-            means.append(pd.DataFrame(self.historial_p_operators).T.loc[range(i*self.individuals,(i+1)*self.individuals)].mean(axis=0).values)
-        means=pd.DataFrame(means,columns=[i[0].__name__.replace("_"," ").capitalize() for i in self.operators])
+        means=pd.DataFrame(self.historial_p_operators).T
+        means.columns=[i[0].__name__.replace("_"," ").capitalize() for i in self.operators]
+        
         means.to_csv(os.path.join(path_dir,"hist_p_operadores.csv"),index=False)
         
         pd.DataFrame(self.generations).T.to_csv(os.path.join(path_dir,"results_generations.csv"))
