@@ -1,5 +1,9 @@
 from utils import *
 import os, shutil
+import multiprocessing
+from joblib import Parallel, delayed
+
+num_cores = round(multiprocessing.cpu_count()*1/1)
 
 class HAEA:
     
@@ -96,13 +100,11 @@ class HAEA:
             return self.fitness[t_f]
             
     def evaluate_pop(self,P,offspring=None):
-        #import multiprocessing
-        #from joblib import Parallel, delayed
-        #num_cores = multiprocessing.cpu_count()
+                
+        values = Parallel(n_jobs=num_cores)(delayed(self.evaluate_fitness_ind)(i) for i in P)
+#         print(num_cores)
         
-        #values = Parallel(n_jobs=num_cores)(delayed(self.evaluate_fitness_ind)(i) for i in P)
-        
-        values = list(map(self.evaluate_fitness_ind,P))
+        #values = list(map(self.evaluate_fitness_ind,P))
                 
         for i,v in zip(P,values):
             self.fitness[t_form(i)]=v
@@ -207,9 +209,18 @@ class HAEA:
         os.mkdir(folder_generations)
         for i in range(self.n_generations):
             self.evolution()
-            if i in np.around(np.linspace(plots,self.n_generations,plots)) :
+            if i in np.around(np.linspace(5,self.n_generations,plots)) :
+                means=pd.DataFrame(self.historial_p_operators).T
+                means.columns=[i[0].__name__.replace("_"," ").capitalize() for i in self.operators]
+
+                means.to_csv(os.path.join(path_dir,"hist_p_operadores.csv"),index=False)
+                
+                
+                pd.DataFrame(self.generations).T.to_csv(os.path.join(path_dir,"results_generations.csv"))
                 self.plot_results(size=size,save=os.path.join(path_dir,"Results.pdf"))
                 self.show_dist_deggre_pop(size=size,save=os.path.join(folder_generations,"generation_"+str(i)+".pdf"))
+                values=list(map(self.evaluate_fitness_ind,self.current_population))
+                np.save(os.path.join(path_dir,"best.npy"),self.current_population[np.argmin(values)])
                 
         means=pd.DataFrame(self.historial_p_operators).T
         means.columns=[i[0].__name__.replace("_"," ").capitalize() for i in self.operators]
