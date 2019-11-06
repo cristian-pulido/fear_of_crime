@@ -234,12 +234,16 @@ class AG:
         
         folder_generations=os.path.join(path_dir,"generations")
         os.mkdir(folder_generations)
+        folder_sols=os.path.join(path_dir,"solutions")
+        os.mkdir(folder_sols)
         for i in range(self.n_generations):
             self.evolution()
             #print(False in [validate_individual(self.persons,i) for i in self.current_population])
-            if i in np.around(np.linspace(plots,self.n_generations,plots)) :
+            if i in np.around(np.linspace(1,self.n_generations-1,plots)) :
                 self.plot_results(size=size,save=os.path.join(path_dir,"Results.pdf"))
                 self.show_dist_deggre_pop(size=size,save=os.path.join(folder_generations,"generation_"+str(i)+".pdf"))
+                values=list(map(self.evaluate_fitness_ind,self.current_population))
+                np.save(os.path.join(folder_sols,"best_"+str(i)+".npy"),self.current_population[np.argmin(values)])
         
         pd.DataFrame(self.generations).T.to_csv(os.path.join(path_dir,"results_generations.csv"))
         self.plot_results(size=size,save=os.path.join(path_dir,"Results.pdf"))

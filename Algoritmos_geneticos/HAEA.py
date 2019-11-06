@@ -1,9 +1,9 @@
 from utils import *
 import os, shutil
-import multiprocessing
-from joblib import Parallel, delayed
+#import multiprocessing
+#from joblib import Parallel, delayed
 
-num_cores = round(multiprocessing.cpu_count()*1/1)
+#num_cores = 4#round(multiprocessing.cpu_count()*1/1)
 
 class HAEA:
     
@@ -101,10 +101,10 @@ class HAEA:
             
     def evaluate_pop(self,P,offspring=None):
                 
-        values = Parallel(n_jobs=num_cores)(delayed(self.evaluate_fitness_ind)(i) for i in P)
+        #values = Parallel(n_jobs=num_cores)(delayed(self.evaluate_fitness_ind)(i) for i in P)
 #         print(num_cores)
         
-        #values = list(map(self.evaluate_fitness_ind,P))
+        values = list(map(self.evaluate_fitness_ind,P))
                 
         for i,v in zip(P,values):
             self.fitness[t_form(i)]=v
@@ -207,9 +207,11 @@ class HAEA:
         
         folder_generations=os.path.join(path_dir,"generations")
         os.mkdir(folder_generations)
+        folder_sols=os.path.join(path_dir,"solutions")
+        os.mkdir(folder_sols)
         for i in range(self.n_generations):
             self.evolution()
-            if i in np.around(np.linspace(5,self.n_generations,plots)) :
+            if i in np.around(np.linspace(1,self.n_generations-1,plots)) :
                 means=pd.DataFrame(self.historial_p_operators).T
                 means.columns=[i[0].__name__.replace("_"," ").capitalize() for i in self.operators]
 
@@ -220,7 +222,7 @@ class HAEA:
                 self.plot_results(size=size,save=os.path.join(path_dir,"Results.pdf"))
                 self.show_dist_deggre_pop(size=size,save=os.path.join(folder_generations,"generation_"+str(i)+".pdf"))
                 values=list(map(self.evaluate_fitness_ind,self.current_population))
-                np.save(os.path.join(path_dir,"best.npy"),self.current_population[np.argmin(values)])
+                np.save(os.path.join(folder_sols,"best_"+str(i)+".npy"),self.current_population[np.argmin(values)])
                 
         means=pd.DataFrame(self.historial_p_operators).T
         means.columns=[i[0].__name__.replace("_"," ").capitalize() for i in self.operators]
