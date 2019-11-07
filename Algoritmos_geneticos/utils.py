@@ -81,6 +81,44 @@ def swap_mutation(individual,n,a=None,b=None,test=False):
         return convert_matrix_to_individual(np.asarray(nx.to_numpy_matrix(A,np.arange(n),dtype=int)))
     else:
         return convert_matrix_to_individual(np.asarray(nx.to_numpy_matrix(A,np.arange(n),dtype=int))),a,b
+    
+def swap_crossover(individual1,individual2,n,p=1,test=False):
+    def new_vecinos(vecinos_o,original,replace):
+        M=np.array(vecinos_o)
+        mask= M == original
+        result=(~mask*M+mask*replace).tolist()
+        if [original,original] in result or [replace,replace] in result:
+            result+=[[original,replace]]
+        return result
+
+
+    gens=len(individual1)
+
+    def process():
+        G1=convert_individual_to_graph(n,individual1)
+        G2=convert_individual_to_graph(n,individual2)
+        person=np.random.choice(np.arange(n),size=2)
+        edges_g1=list(G1.edges(person[0]))
+        edges_g2=list(G2.edges(person[1]))
+        G1.remove_edges_from(edges_g1)
+        G2.remove_edges_from(edges_g2)
+        G1.add_edges_from(new_vecinos(edges_g2,person[1],person[0]))
+        G2.add_edges_from(new_vecinos(edges_g1,person[0],person[1]))
+
+        h1=convert_matrix_to_individual(np.asarray(nx.to_numpy_matrix(G1,np.arange(n),dtype=int)))
+        h2=convert_matrix_to_individual(np.asarray(nx.to_numpy_matrix(G2,np.arange(n),dtype=int)))
+
+        return h1,h2,person
+
+    h1,h2,person=process()    
+
+    while False in [validate_individual(n,h1),validate_individual(n,h2)]:
+
+        h1,h2,person=process()        
+    if test == False:
+        return h1,h2
+    else:
+        return h1,h2,person
 
 def usual_mutation(individual,n,p=None):
     if not p:

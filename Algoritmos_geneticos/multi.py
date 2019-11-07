@@ -3,7 +3,7 @@ from utils import *
 import multiprocessing
 from joblib import Parallel, delayed
 
-num_cores = 2#round(multiprocessing.cpu_count()*1/2)
+num_cores = round(multiprocessing.cpu_count()*3/4)
 
 def multi_runs_AG(root_path,runs,nombre,persons,individuals,
                   mode_initial_pop,n_generations,p_crossover,
@@ -30,6 +30,7 @@ def multi_runs_AG(root_path,runs,nombre,persons,individuals,
         ax1.set_ylabel("Fitness")
         plt.savefig(os.path.join(root_path,"results_multi_run.pdf"))
         plt.show()
+        plt.close(fig)
     
 
     def single_AG(i):

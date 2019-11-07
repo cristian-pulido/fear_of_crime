@@ -5,4 +5,4 @@ Gens,435
 individuals,50
 p_mutation,0.0022988505747126436
 generacional,False
-operators,"['usual_mutation', 'usual_crossover', 'swap_mutation']"
+operators,"['usual_mutation', 'usual_crossover', 'swap_mutation', 'swap_crossover']"

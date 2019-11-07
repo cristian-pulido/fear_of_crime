@@ -106,6 +106,7 @@ class AG:
             plt.savefig(save,dpi=300)
             
         plt.show()
+        plt.close(fig)
             
     def evaluate_fitness_ind(self,individual):
 
@@ -209,6 +210,7 @@ class AG:
             plt.savefig(save,dpi=300)
             
         plt.show()
+        plt.close(fig)
             
     def run(self,size=(12,5),save_dist=None,save_results=None):
         self.generate_pop_ini()
@@ -275,6 +277,7 @@ class AG:
         if save:
             plt.savefig(save,dpi=300) 
         plt.show()
+        plt.close(fig)
         
     def example_usual_crossover(self,save=None):
         
@@ -305,6 +308,7 @@ class AG:
         if save:
             plt.savefig(save,dpi=300) 
         plt.show()
+        plt.close(fig)
             
             
     def example_swap(self,save=None):
@@ -325,6 +329,35 @@ class AG:
         if save:
             plt.savefig(save,dpi=300) 
         plt.show()
+        plt.close(fig)
+        
+    def example_swap_crossover(self,save=None):
+        P=self.current_population
+        I=P[np.random.choice(len(P),2)]
+        J,K,person=swap_crossover(I[0],I[1],self.persons,test=True)
+        I=np.concatenate((I,(J,K)))
+        fig,ax=plt.subplots(2,2,figsize=(10,10))
+        [axi.set_axis_off() for axi in ax.ravel()]
+        ax=ax.ravel()
+        [axi.title.set_text(title) for axi,title in zip(ax,['Parent 1','Parent 2','offspring 1','offspring 2'])]
+        G_s=[]
+        for axi,individual in zip(ax,I):
+            G=convert_individual_to_graph(self.persons,individual)
+            G_s.append(G)
+
+        colors=['b','r']
+
+
+        for axi,individual,idx in zip(ax,G_s,np.arange(len(G_s))):
+            nx.draw_networkx(individual,pos=nx.circular_layout(individual),with_labels=True,ax=axi,width=2,
+                             node_color=[colors[i in [person[idx%2]] ] for i in individual.nodes])
+
+        if save:
+            plt.savefig(save,dpi=300) 
+        plt.show()
+        plt.close(fig)
+
+
 
     
         

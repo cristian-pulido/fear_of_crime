@@ -16,7 +16,7 @@ class HAEA:
                  generacional=False,
                  fitness_func=fitness_basic,
                  n_offsprings=1,
-                 operators=[(usual_mutation,1),(usual_crossover,2),(swap_mutation,1)]
+                 operators=[(usual_mutation,1),(usual_crossover,2),(swap_mutation,1),(swap_crossover,2)]
                 ):
         
         self.nombre=nombre
@@ -87,6 +87,7 @@ class HAEA:
             plt.savefig(save,dpi=300)
             
         plt.show()
+        plt.close(fig)
             
     def evaluate_fitness_ind(self,individual):
 
@@ -191,6 +192,7 @@ class HAEA:
             plt.savefig(save,dpi=300)
             
         plt.show()
+        plt.close(fig)
             
            
     def run_alone(self,size=(12,5),path_dir="",console=True,plots=10):

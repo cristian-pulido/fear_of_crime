@@ -3,11 +3,11 @@ from utils import *
 import multiprocessing
 from joblib import Parallel, delayed
 
-num_cores = round(multiprocessing.cpu_count()*1/2)
+num_cores = round(multiprocessing.cpu_count()*3/4)
 
 def multi_runs_HAEA(root_path,runs,nombre,persons,individuals,
                     mode_initial_pop,n_generations,fitness_func,plots,p_mutation=None,
-                    n_offsprings=1,operators=[(usual_mutation,1),(usual_crossover,2),(swap_mutation,1)],
+                    n_offsprings=1,operators=[(usual_mutation,1),(usual_crossover,2),(swap_mutation,1),(swap_crossover,2)],
                     generacional=False,console=True):
     
     def results(partial_runs):
@@ -45,6 +45,7 @@ def multi_runs_HAEA(root_path,runs,nombre,persons,individuals,
         ax1.set_xlabel("Generations")
         plt.savefig(os.path.join(root_path,"results_prob_operators.pdf"))
         plt.show()
+        plt.close(fig)
         
     
 

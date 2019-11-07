@@ -31,15 +31,15 @@ def run_experiments(grupos = {'A':'Immune','B':'Susceptible','C':'Highly Suscept
                     root_path="main_test",
                     runs=30,
                     nombre="fear",
-                    individuals=500,
+                    individuals=300,
                     mode_initial_pop=pop_ini_uniform,
-                    n_generations=50,
+                    n_generations=500,
                     p_crossover=0.7,
                     p_mutation=None,
                     crossover_func=ruleta,
                     generacional=False,
                     console=True,
-                    plots=5
+                    plots=50
                    ):
     
     
