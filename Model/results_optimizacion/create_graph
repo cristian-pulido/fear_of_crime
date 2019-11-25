@@ -1,0 +1,39 @@
+from networkx import LFR_benchmark_graph
+#from networkx.algorithms.community import LFR_benchmark_graph
+n = 300
+tau1 = 11
+tau2 = 1.1
+mu = 0.1
+G = LFR_benchmark_graph(n, tau1, tau2, mu, average_degree=10,
+                        min_community=30,max_community=210)
+import networkx as nx
+communities = {frozenset(G.nodes[v]['community']) for v in G}
+edges=list(G.edges())
+sizes={l:s for l,s in zip(['A','B','C'],sorted([len(c) for c in communities],reverse=True))}
+g=[0]*300
+for comm in communities:
+    key=[key  for (key, value) in sizes.items() if value == len(comm)][0]
+    for c in comm:
+        g[c]=key
+        
+#sizes
+A_index=np.arange(300)[(pd.Series(g) == 'A').values]
+B_index=np.arange(300)[(pd.Series(g) == 'B').values]
+C_index=np.arange(300)[(pd.Series(g) == 'C').values]
+order=pd.DataFrame(g).sort_values(0).index
+       
+H = nx.Graph()
+for pd.DataFrame(g).sort_values(0).reset_index().values:
+    H.add_node(idx,crime=i)
+H.add_edges_from(edges)
+H.add_edges_from(list(zip(np.random.choice(A_index,5),np.random.choice(B_index,5))))
+H.add_edges_from(list(zip(np.random.choice(A_index,5),np.random.choice(C_index,5))))
+H.add_edges_from(list(zip(np.random.choice(C_index,5),np.random.choice(B_index,5))))
+#draw_graph(H,np.ones(len(G.nodes)),crime=crimen,labels=False,save=False,file="",legends={"A":"Immune",'B':'Susceptible','C':'Higly susceptible'})
+
+def convert_matrix_to_individual(M):
+    n=len(M)
+    return np.concatenate([M[i][i+1:n] for i in range(n)])
+
+ind=convert_matrix_to_individual(np.asarray(nx.to_numpy_matrix(H,order,dtype=int)))
+np.save("/home/cristian/Desktop/base_graph.npy",ind)

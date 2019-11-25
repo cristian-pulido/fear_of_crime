@@ -245,7 +245,7 @@ def generate(vertices,psi=psi,nu=nu,mu=mu,T=200,s=np.array([None]),lamda=lamda,m
         return St, conteo
 
 def homofilia(G):
-    return sum([G.node[i[0]] == G.node[i[1]] for i in G.edges])/len(G.edges)
+    return sum([G.nodes[i[0]]['crime'] == G.nodes[i[1]]['crime'] for i in G.edges])/len(G.edges)
 
 
 def draw_graph(G,fear,crime=crimen,labels=False,save=False,file="",legends=None):
@@ -255,7 +255,8 @@ def draw_graph(G,fear,crime=crimen,labels=False,save=False,file="",legends=None)
     colors  = {"A":"royalblue","B":"gold","C":"orangered","D":"green","E":"purple","F":"pink","G":"aqua","H":"peru","I":"navy","J":"darkred"}
     
     labels=[]
-    color=[colors[G.node[i]['crime']] for i in G.nodes]
+    
+    color=[colors[i[1]['crime']] for i in G.nodes.data()]
     #spectral_layout
     #spring_layout
     #kamada_kawai_layout
@@ -287,10 +288,19 @@ def assor(G):
     a=attribute_assortativity_coefficient(G=G,attribute='crime')
     return a
 
-def mixing_matrix(G,crimen=crimen):
+def mixing_matrix(G,crimen=crimen,normalized=True):
     from networkx.algorithms.assortativity.mixing import attribute_mixing_matrix
     m={x:i for x,i in zip(letras[:crimen],range(crimen))}
-    return attribute_mixing_matrix(G=G,attribute="crime",mapping=m)
+    return attribute_mixing_matrix(G=G,attribute="crime",mapping=m,normalized=normalized)
+
+def mixing_matrix_normal(G,crimen=crimen):
+    from networkx.algorithms.assortativity.mixing import attribute_mixing_matrix
+    m={x:i for x,i in zip(letras[:crimen],range(crimen))}
+    A=attribute_mixing_matrix(G=G,attribute="crime",mapping=m,normalized=False)/2
+    cantidad=np.unique([i[1]['crime'] for i in G.nodes.data()],return_counts=True)[1]
+    all_p=cantidad*cantidad.reshape(len(cantidad),1)/2*~np.eye(3).astype(bool)+(np.diag(cantidad)*np.diag(cantidad-1))/2
+    A=A/all_p
+    return (A/A.sum(axis=0)).T
 
 def normpdf(x, mean, sd):
     import math
@@ -300,7 +310,7 @@ def normpdf(x, mean, sd):
     return num/denom
 
                                    
-def plot(vertices,s,lamda=lamda,psi=psi,nu=nu,mu=mu,modelo=modelo,T=220,save=False,f="",legends=None,draw=False):
+def plot(vertices,s,lamda=lamda,psi=psi,nu=nu,mu=mu,modelo=modelo,T=220,save=False,f="",legends=None,draw=False,opt=False):
     import seaborn as sns
     import matplotlib.pyplot as plt
     import pandas as pd
@@ -313,7 +323,14 @@ def plot(vertices,s,lamda=lamda,psi=psi,nu=nu,mu=mu,modelo=modelo,T=220,save=Fal
     colors  = {"A":"royalblue","B":"gold","C":"orangered","D":"orange","E":"purple","F":"pink","G":"yellow"}
     S,promedio=generate(vertices=vertices,psi=psi,nu=nu,
                         mu=mu,T=T,s=s,lamda=lamda,modelo=modelo)
-    S=S.T#[:,int(T):]
+    if opt ==False:
+        S=S.T#[:,int(T):]
+    else:
+        
+        T=int(T/2)
+        S=S.T[:,T:]
+        promedio=S.mean()
+        
         
     if draw == False:
         return S#promedio

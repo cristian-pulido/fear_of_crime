@@ -275,7 +275,7 @@ class AG:
                          width=2
                         )
         if save:
-            plt.savefig(save,dpi=300) 
+            plt.savefig(save,bbox_inches='tight',dpi=300) 
         plt.show()
         plt.close(fig)
         
@@ -294,7 +294,7 @@ class AG:
             G=convert_individual_to_graph(self.persons,individual)
             G_s.append(G)
 
-        colors=np.array(['g','r','b','orange'])
+        colors=np.array(['g','r','palevioletred','k'])
         com=commons_f(G_s)
         c=[]
         c.append([colors[np.where([i in com[0],i in com[1]])[0][0]]  for i in G_s[0].edges])
@@ -306,7 +306,7 @@ class AG:
         for axi,individual,col in zip(ax,G_s,c):
             nx.draw_networkx(individual,pos=nx.circular_layout(individual),with_labels=True,ax=axi,width=2,edge_color=col)
         if save:
-            plt.savefig(save,dpi=300) 
+            plt.savefig(save,bbox_inches='tight',dpi=300) 
         plt.show()
         plt.close(fig)
             
@@ -315,19 +315,29 @@ class AG:
         P=self.current_population
         individual=P[np.random.choice(len(P))]
         colors=['b','r']
+        colors_edges=['k','m','g']
         fig,ax=plt.subplots(1,2,figsize=(12,5))
         [axi.set_axis_off() for axi in ax.ravel()]
         ax[0].title.set_text('Original')
         ax[1].title.set_text('Swap')
         swap,a,b=swap_mutation(individual,self.persons,test=True)
         G=convert_individual_to_graph(self.persons,individual)
+        
+        
+        
         nx.draw_networkx(G,pos=nx.circular_layout(G),
-                         with_labels=True,ax=ax[0],width=2,node_color=[colors[i in [a,b]] for i in G.nodes])
+                         with_labels=True,ax=ax[0],width=2,
+                         node_color=[colors[i in [a,b]] for i in G.nodes],
+                         edge_color=[colors_edges[i] for i in [((a in edge)*1 + (b in edge)*2)%3 for edge in G.edges]]
+                        )
         G=convert_individual_to_graph(self.persons,swap)
         nx.draw_networkx(G,pos=nx.circular_layout(G),
-                         with_labels=True,ax=ax[1],width=2,node_color=[colors[i in [a,b]] for i in G.nodes])
+                         with_labels=True,ax=ax[1],width=2,
+                         node_color=[colors[i in [a,b]] for i in G.nodes],
+                         edge_color=[colors_edges[i] for i in [((a in edge)*2 + (b in edge)*1)%3 for edge in G.edges]]
+                        )
         if save:
-            plt.savefig(save,dpi=300) 
+            plt.savefig(save,bbox_inches='tight',dpi=300) 
         plt.show()
         plt.close(fig)
         
@@ -346,14 +356,18 @@ class AG:
             G_s.append(G)
 
         colors=['b','r']
+        colors_edges=['k','m','g']
 
 
         for axi,individual,idx in zip(ax,G_s,np.arange(len(G_s))):
+            
             nx.draw_networkx(individual,pos=nx.circular_layout(individual),with_labels=True,ax=axi,width=2,
-                             node_color=[colors[i in [person[idx%2]] ] for i in individual.nodes])
+                             node_color=[colors[i in [person[idx%2]] ] for i in individual.nodes],
+                             edge_color=[colors_edges[i] for i in [(person[idx%2] in edge)*((idx**2+1)%3 ) for edge in individual.edges]]
+                            )
 
         if save:
-            plt.savefig(save,dpi=300) 
+            plt.savefig(save,bbox_inches='tight',dpi=300) 
         plt.show()
         plt.close(fig)
 
